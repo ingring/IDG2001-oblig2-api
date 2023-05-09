@@ -1,0 +1,105 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family:'Times New Roman', Times, serif;
+}
+
+main{
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(43, 43, 43);
+}
+
+h1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin: 1rem;
+}
+
+.form-container{
+    height: 40vh;
+    min-width: 20vw;
+    max-width: 30vw;
+    border: 2px solid rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 2px 19px 39px 0px rgba(0,0,0,0.75);
+-webkit-box-shadow: 2px 19px 39px 0px rgba(0,0,0,0.75);
+-moz-box-shadow: 2px 19px 39px 0px rgba(0,0,0,0.75);
+    padding: 10px;
+}
+
+form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    flex-direction: column;
+}
+
+.submit{
+    background-color: white;
+    color: #2e4151;
+    border-radius: 20px;
+    margin-top: 5%;
+}
+
+label{
+    margin-bottom: 10%;
+}
+
+.submit:hover{
+    cursor: pointer;
+}
+
+#file{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 40%;
+}
+
+.download-button{
+    background-color: white;
+    color: #2e4151;
+    border-radius: 20px;
+    margin-top: 5%;
+    box-shadow: 2px 19px 39px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 2px 19px 39px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 19px 39px 0px rgba(0,0,0,0.75);
+    font-size: larger;
+}
+
+.download-button:hover{
+    cursor: pointer;
+}
+
+.buttons-container{
+    flex-direction: row;
+    display: flex;
+    gap: 5%;
+}
+
+.download-button, .submit{
+    padding: 5px 20px;
+    display: inline;
+
+}
+
+@media only screen and (max-width: 600px) {
+
+    .form-container{
+        max-width: 100vw;
+    }
+
+}
