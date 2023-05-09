@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 # allow cors on all of the routes
 CORS(app, resources={
-     r"/*": {"origins": ["https://client-production-00c5.up.railway.app"]}})
+     r"/*": {"origins": ["*"]}})
 
 
 # add contact in database
