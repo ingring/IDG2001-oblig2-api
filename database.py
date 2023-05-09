@@ -10,15 +10,17 @@ if os.path.exists('.env'):
 
 else:
     # Use environmental variables
-    MONGO_URI = os.environ.get('MONGO_URL')
+    # MONGO_URI = os.environ.get('MONGO_URL')
 
-    host = os.environ.get('MONGOHOST')
-    pw = os.environ.get('MONGOPASSWORD')
-    port = int(os.environ.get('MONGOPORT'))  # type: ignore
-    print(type(port), port)
-    user = os.environ.get('MONGOUSER')
+    # host = os.environ.get('MONGOHOST')
+    # pw = os.environ.get('MONGOPASSWORD')
+    # port = int(os.environ.get('MONGOPORT'))  # type: ignore
+    # print(type(port), port)
+    # user = os.environ.get('MONGOUSER')
 
-    client = MongoClient(host, port, password=pw, username=user)
+    # client = MongoClient(host, port, password=pw, username=user)
+    MONGO_URI = os.environ.get('MONGO_URI')
+    client = MongoClient(MONGO_URI)
 
 
 # connecting to the database
