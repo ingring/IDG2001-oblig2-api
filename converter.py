@@ -221,7 +221,7 @@ def all_vcard_formatter(list_of_contacts):
     pattern = r'^(phone|address).*'
 
     # Convert the JSON string to a Python dict
-    list_of_contacts = loads(list_of_contacts)
+    # list_of_contacts = loads(list_of_contacts)
     string = ''
     for contact in list_of_contacts:
         string += 'BEGIN:VCARD'
