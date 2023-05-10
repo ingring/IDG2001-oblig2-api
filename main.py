@@ -8,6 +8,8 @@ import json
 
 import uuid
 
+import requests
+
 # import the connection of the database and all of the functions used inside the routes
 from database import db
 # from functions import *
@@ -23,6 +25,7 @@ app = Flask(__name__)
 CORS(app, resources={
      r"/*": {"origins": ["*"]}})
 
+API_KEY = os.getenv('API_KEY')
 
 # add contact in database
 @app.route('/contacts', methods=['POST'])
@@ -41,8 +44,14 @@ def add_to_db():
 
 # GET all contacts in JSON format
 @app.route('/contacts', methods=['GET'])
-def get_all_contacts_JSON():
-    return get_all_contacts()
+def get_all_contacts_JSON_verified():
+    provided_api_key = request.headers.get('API-Key')
+
+    if provided_api_key == API_KEY:
+        return get_all_contacts()
+    else:
+        return {'message': 'Invalid API key'}, 401
+
 
 
 # GET all contacts in vcard format inside a JSON structure
@@ -56,7 +65,15 @@ def get_all_contacts_vcard():
 # GET all contacts in JSON format
 @app.route('/contacts/<id>', methods=['GET'])
 def get_contact_JSON(id):
-    return get_contact(id)
+    # return get_contact(id)
+    url = f'https://idg2001-oblig2-api.onrender.com/contacts/{id}'
+    headers = {'Authorization': f'Bearer {API_KEY}'}
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return 'Error: Unable to retrieve contact', response.status_code
 
 
 # GET contact by id and visualize in vcard format inside a JSON structure
