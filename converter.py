@@ -133,20 +133,14 @@ def add_type(str):
     else:
         return str.replace(';', '_')
 
-
+# Replaces the prefix, adds the type and formats the string into a dictionary 
 def copy_prefix(str):
-    # Replaces "TEL" or "ADR"
-    replace_prefix(str)
-
-    # Add the type
-    add_type(str)
-
     # Define the regular expression pattern to match
     pattern = r'^(TEL|ADR).*'
 
     # Check if the input string matches the regular expression
     if re.match(pattern, str):
-        # Replace the prefix
+        # Replace the prefix "TEL" or "ADR"
         output_str = replace_prefix(str)
 
         # Add the type
@@ -157,7 +151,6 @@ def copy_prefix(str):
         return dict
     else:
         return str
-
 
 # creates a dictionary from the string, that includes prefix and value
 def create_dictionary(string):
@@ -235,7 +228,7 @@ def get_all_contacts():
     result = db['contacts'].find({})
     result = list(result)
     result = dumps(result)
-    return result
+    return json.loads(result)
 
 # Get all contacts from database in vcard format
 def get_all_contacts_vcard():
