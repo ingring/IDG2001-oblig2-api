@@ -47,9 +47,8 @@ def get_all_contacts_JSON():
 # GET all contacts in vcard format inside a JSON structure
 @app.route('/contacts/vcard', methods=['GET'])
 def get_all_contacts_vcard():
-    all_contacts = get_all_contacts()
-    data = all_vcard_formatter(all_contacts)
-    return {data}
+    all_contacts_vcard = get_all_contacts()
+    return {"message":all_contacts_vcard}
 
 
 # GET all contacts in JSON format
@@ -61,9 +60,8 @@ def get_contact_JSON(id):
 # GET contact by id and visualize in vcard format inside a JSON structure
 @app.route('/contacts/<id>/vcard', methods=['GET'])
 def get_contact_vcard(id):
-    contact = get_contact(id)
-    data = one_vcard_formatter(contact)
-    return {"message":data}
+    contact_vcard = get_contact_vcard(id)
+    return {"message":contact_vcard}
 
 
 if __name__ == '__main__':

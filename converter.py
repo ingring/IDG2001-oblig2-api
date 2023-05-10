@@ -236,17 +236,47 @@ def get_all_contacts():
     result = list(result)
     result = dumps(result)
 
+# Get all contacts from database in vcard format
+def get_all_contacts_vcard():
+    # Get all contacts from database
+    result = get_all_contacts
+
     # Convert the JSON string to a Python dict
     data = json.loads(result)
 
+    # Define empty string to store the vcard content
     string = ''
+
+    # loops through each contact in the data from the database
     for contact in data:
+
+        # add BEGIN:VCARD in front of each contact
         string += 'BEGIN:VCARD'
+
+        # formats each contact to a vcard format
         for item in contact.items():
             newString = vcard_formatter(item)
             string += newString
+
+        # add END:VCARD at the end of each contact
         string += '\nEND:VCARD\n'
     return string
+
+# get contact by id
+def get_contact(id):
+    result = db['contacts'].find_one({"_id": ObjectId(id)}, {"_id": 0})
+    return result 
+
+# get contact by id in vcard format
+def get_contact_vcard(id):
+    # get contact by id from db
+    result = get_contact(id)
+
+    # Convert the result to a Python dict
+    data = loads(dumps(result))
+
+    # Convert the dict to vCard format
+    return vcard_formatter(data)
 
 def revert_prefix(str):
     # Define the regular expression pattern to match
