@@ -22,7 +22,6 @@ def replace_common_keys(key):
         'BDAY': 'birthday'
     }.get(key_main, key)
 
-
 # reverts it back to vcard format
 def revert_common_keys(key):
     key_main = key.split(';')[0]
@@ -35,93 +34,123 @@ def revert_common_keys(key):
         'birthday': 'BDAY'
     }.get(key_main.lower(), key)
 
+# Splits into lists on 'END:VCARD'
+def split_content(content):
+    return content.split('END:VCARD')
+
+# Removes the last line which is END:VCARD
+def remove_last_line(contact_split):
+    contact_split[-1] = contact_split[-1].replace('END:VCARD', '')
+    return contact_split
+
+# processes each line in the list based on whether it matches the pattern or not
+# adds the resulting key-value pairs to a dictionary
+def process_lines(lines, pattern):
+    contact = {}
+
+    # loops through each line in contact lines 
+    for line in lines:
+        line = line.strip()
+
+        # remove BEGIN:VCARD
+        if line.startswith('BEGIN:'):
+            continue
+
+        # remove empty lines
+        if len(line) < 1:
+            continue
+
+        # if it matches the pattern, use the copy prefix function
+        elif re.match(pattern, line):
+            line = copy_prefix(line)
+            contact.update(line)
+
+        # if not, make a key value pair with the more common human language keys
+        else:
+            key, *value = line.split(':', 1)
+            value = ':'.join(value)
+            key = replace_common_keys(key)
+            contact[key] = value
+    return contact
 
 # since the front end do minimal with the file before sending it to the backend,
 # we have to structure the content before we send it to a database
-# For instance: seperate the contacts into different objects
 # Inspired by lab 3
 def structure_input_text(content):
+    # Define the regular expression pattern to match
     pattern = r'^(TEL|ADR).*'
 
-    # Split into lists
-    contact_split = content.split('END:VCARD')
+    # splits the vcard content into each contacts
+    contact_split = split_content(content)
 
-    # Remove the last line which is END:VCARD
-    contact_split[-1] = contact_split[-1].replace('END:VCARD', '')
+    # removes the last line in each contact which is END:VCARD
+    contact_split = remove_last_line(contact_split)
 
-    # empty list of contacts
+    # empty list that will hold all of the contacts
     contacts = []
 
-    # making a dict for each contact and add it to the contacts list
+    # loops through each contact and makes a contact object 
     for each_contact in contact_split:
-        # Create new, empty contact, and split the text into lines.
-        contact = {}
         lines = each_contact.split('\r\n')
 
-        # reads line by line
-        for line in lines:
-            line = line.strip()
+        # processes each line in the list of lines based on matching the pattern or not
+        # also returns key value pair
+        contact = process_lines(lines, pattern)
 
-            # Skip this iteration if the line starts with begin, since we haven't removed that yet
-            if line.startswith('BEGIN:'):
-                continue
-
-            # Skip this iteration if the line is empty, for instance the last line
-            if len(line) < 1:
-                continue
-
-            # checks if the line is address or telephone, since these two is different from the other lines
-            elif re.match(pattern, line):
-                line = copy_prefix(line)
-                contact.update(line)
-
-            else:
-                # Splits on the semicolon and makes a key value pair
-                key, *value = line.split(':', 1)
-                value = ':'.join(value)
-
-                # Replace the common vcard keys so it is easier to read
-                key = replace_common_keys(key)
-
-                # Add key-value-pair to the contact dictionary, and add to contact list.
-                contact[key] = value
-
-        # adds the contact to the contacts dict
+        # appends the contact object to the contacts list
         contacts.append(contact)
-
     return contacts
-
-
-# change the format from 'TEL/ADR;TYPE=work' to 'phone/address_work...'
-def copy_prefix(str):
+    
+# replaces the string, if it matches "TEL" or "ADR" with phone or address
+def replace_prefix(str):
     # Define the regular expression pattern to match
     pattern = r'^(TEL|ADR).*'
     pattern_phone = r'^TEL.*'
     pattern_address = r'^ADR.*'
 
+    # If the str matches, replace "TEL" with "phone"
+    if re.match(pattern_phone, str):
+        return str.replace('TEL', 'phone')
+
+    # If the str matches, replace "ADR" with "address"
+    if re.match(pattern_address, str):
+        return str.replace('ADR', 'address')
+
+    return str
+
+# replaces semicolons with underscores, if no type is present in the string
+def add_type(str):
+    # Use regular expressions to extract the type (if present)
+    match = re.search(r';TYPE=([^,:;]+)', str)
+    if match:
+        type_str = match.group(1)
+
+        # Replace semicolons with percent signs to create a URL-friendly string
+        type_str = type_str.replace(';', '%', 1)
+
+        # Add the type to the output string
+        return str.replace(';TYPE=' + type_str, '_' + type_str + '$')
+    else:
+        return str.replace(';', '_')
+
+
+def copy_prefix(str):
+    # Replaces "TEL" or "ADR"
+    replace_prefix(str)
+
+    # Add the type
+    add_type(str)
+
+    # Define the regular expression pattern to match
+    pattern = r'^(TEL|ADR).*'
+
     # Check if the input string matches the regular expression
     if re.match(pattern, str):
-        # If the str matches, replace "TEL" with "phone"
-        if re.match(pattern_phone, str):
-            output_str = str.replace('TEL', 'phone')
+        # Replace the prefix
+        output_str = replace_prefix(str)
 
-        # If the str matches, replace "ADR" with "address"
-        if re.match(pattern_address, str):
-            output_str = str.replace('ADR', 'address')
-        
-        # Use regular expressions to extract the type (if present)
-        match = re.search(r';TYPE=([^,:;]+)', str)
-        if match:
-            type_str = match.group(1)
-
-            # Replace semicolons with percent signs to create a URL-friendly string
-            type_str = type_str.replace(';', '%', 1)
-
-            # Add the type to the output string
-            output_str = output_str.replace(
-                ';TYPE=' + type_str, '_' + type_str + '$')
-        else:
-            output_str = output_str.replace(';', '_')
+        # Add the type
+        output_str = add_type(output_str)
 
         # reformat and restructure into a dict
         dict = create_dictionary(output_str)
@@ -177,8 +206,9 @@ def create_dictionary(string):
 # Get all contacts from database
 def get_all_contacts():
     result = db['contacts'].find({})
-    return dumps(result)
-
+    result = list(result)
+    result = dumps(result)
+    return json.loads(result)
 
 # get contact by id
 def get_contact(id):
