@@ -23,7 +23,6 @@ app = Flask(__name__)
 CORS(app, resources={
      r"/*": {"origins": ["*"]}})
 
-
 # add contact in database
 @app.route('/contacts', methods=['POST'])
 def add_to_db():
@@ -50,7 +49,7 @@ def get_all_contacts_JSON():
 def get_all_contacts_vcard():
     all_contacts = get_all_contacts()
     data = all_vcard_formatter(all_contacts)
-    return {"message": data}
+    return {data}
 
 
 # GET all contacts in JSON format
@@ -64,7 +63,7 @@ def get_contact_JSON(id):
 def get_contact_vcard(id):
     contact = get_contact(id)
     data = one_vcard_formatter(contact)
-    return {"message": data}
+    return {data}
 
 
 if __name__ == '__main__':
