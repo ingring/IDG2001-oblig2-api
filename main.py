@@ -25,7 +25,7 @@ CORS(app, resources={
 
 # add contact in database
 @app.route('/contacts', methods=['POST'])
-def add_to_db():
+def add_to_db_route():
     data = request.json['message']
     contact_list = structure_input_text(data)
     for document in contact_list:
@@ -40,26 +40,26 @@ def add_to_db():
 
 # GET all contacts in JSON format
 @app.route('/contacts', methods=['GET'])
-def get_all_contacts_JSON():
+def get_all_contacts_JSON_route():
     return get_all_contacts()
 
 
 # GET all contacts in vcard format inside a JSON structure
 @app.route('/contacts/vcard', methods=['GET'])
-def get_all_contacts_vcard():
-    all_contacts_vcard = get_all_contacts()
+def get_all_contacts_vcard_route():
+    all_contacts_vcard = get_all_contacts_vcard()
     return {"message":all_contacts_vcard}
 
 
 # GET all contacts in JSON format
 @app.route('/contacts/<id>', methods=['GET'])
-def get_contact_JSON(id):
+def get_contact_JSON_route(id):
     return get_contact(id)
 
 
 # GET contact by id and visualize in vcard format inside a JSON structure
 @app.route('/contacts/<id>/vcard', methods=['GET'])
-def get_contact_vcard(id):
+def get_contact_vcard_route(id):
     contact_vcard = get_contact_vcard(id)
     return {"message":contact_vcard}
 
