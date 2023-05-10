@@ -49,7 +49,7 @@ def get_all_contacts_JSON():
 def get_all_contacts_vcard():
     all_contacts = get_all_contacts()
     data = all_vcard_formatter(all_contacts)
-    return {data}
+    return {"message":data}
 
 
 # GET all contacts in JSON format
@@ -63,7 +63,7 @@ def get_contact_JSON(id):
 def get_contact_vcard(id):
     contact = get_contact(id)
     data = one_vcard_formatter(contact)
-    return {data}
+    return {"message":data}
 
 
 if __name__ == '__main__':
