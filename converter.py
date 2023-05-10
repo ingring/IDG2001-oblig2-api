@@ -228,15 +228,15 @@ def get_all_contacts():
     result = db['contacts'].find({})
     result = list(result)
     result = dumps(result)
-    return json.loads(result)
+    return result
 
 # Get all contacts from database in vcard format
 def get_all_contacts_vcard():
     # Get all contacts from database
     all_contacts = get_all_contacts()
 
-    # # Convert the JSON string to a Python dict
-    # data = json.loads(result)
+    # Convert the JSON string to a Python dict
+    all_contacts = json.loads(all_contacts)
 
     # Define empty string to store the vcard content
     string = ''

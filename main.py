@@ -41,7 +41,8 @@ def add_to_db_route():
 # GET all contacts in JSON format
 @app.route('/contacts', methods=['GET'])
 def get_all_contacts_JSON_route():
-    return get_all_contacts()
+    all_contacts = get_all_contacts()
+    return json.loads(all_contacts)
 
 
 # GET all contacts in vcard format inside a JSON structure
