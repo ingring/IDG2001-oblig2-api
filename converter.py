@@ -202,66 +202,16 @@ def create_dictionary(string):
 
     return data
 
-
-# Get all contacts from database
-def get_all_contacts():
-    result = db['contacts'].find({})
-    result = list(result)
-    result = dumps(result)
-    return json.loads(result)
-
-# get contact by id
-def get_contact(id):
-    result = db['contacts'].find_one({"_id": ObjectId(id)}, {"_id": 0})
-    return result
-
-
 # format the data from JSON to vCard
-def all_vcard_formatter(list_of_contacts):
-    pattern = r'^(phone|address).*'
-
-    # Convert the JSON string to a Python dict
-    string = ''
-    for contact in list_of_contacts:
-        string += 'BEGIN:VCARD'
-        for item in contact.items():
-
-            # don't include the mongodb id in the vcf
-            if item[0] == '_id':
-                continue
-
-            # don't include the uuid created column in the vcf
-            if item[0] == 'uuid':
-                continue
-
-            # if it is a phone or address:
-            elif re.match(pattern, item[0]):
-                # Replace with the function that creates vCard string
-                newString = create_vcard_string(item)
-                string += newString
-            else:
-                # returns the keys in vcard format
-                formatted_key = revert_common_keys(item[0])
-
-                # creates the vcard line
-                string += '\n' + formatted_key + ':' + item[1]
-        string += '\nEND:VCARD\n'
-    return string
-
-
-def one_vcard_formatter(dict):
+def vcard_formatter(data):
     pattern = r'^(phone|address).*'
 
     string = ''
     string += 'BEGIN:VCARD'
 
-    for item in dict.items():
-        # don't include the mongodb id in the vcf
-        if item[0] == '_id':
-            continue
-
-        # don't include the uuid created column in the vcf
-        if item[0] == 'uuid':
+    for item in data.items():
+        # don't include the mongodb id or uuid created column in the vcf
+        if item[0] in ('_id', 'uuid'):
             continue
 
         # if it is a phone or address:
@@ -280,6 +230,53 @@ def one_vcard_formatter(dict):
     string += '\nEND:VCARD\n'
     return string
 
+# Get all contacts from database
+def get_all_contacts():
+    result = db['contacts'].find({})
+    result = list(result)
+    result = dumps(result)
+
+# Get all contacts from database in vcard format
+def get_all_contacts_vcard():
+    # Get all contacts from database
+    result = get_all_contacts
+
+    # Convert the JSON string to a Python dict
+    data = json.loads(result)
+
+    # Define empty string to store the vcard content
+    string = ''
+
+    # loops through each contact in the data from the database
+    for contact in data:
+
+        # add BEGIN:VCARD in front of each contact
+        string += 'BEGIN:VCARD'
+
+        # formats each contact to a vcard format
+        for item in contact.items():
+            newString = vcard_formatter(item)
+            string += newString
+
+        # add END:VCARD at the end of each contact
+        string += '\nEND:VCARD\n'
+    return string
+
+# get contact by id
+def get_contact(id):
+    result = db['contacts'].find_one({"_id": ObjectId(id)}, {"_id": 0})
+    return result 
+
+# get contact by id in vcard format
+def get_contact_vcard(id):
+    # get contact by id from db
+    result = get_contact(id)
+
+    # Convert the result to a Python dict
+    data = loads(dumps(result))
+
+    # Convert the dict to vCard format
+    return vcard_formatter(data)
 
 def revert_prefix(str):
     # Define the regular expression pattern to match
