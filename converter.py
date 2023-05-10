@@ -235,6 +235,7 @@ def get_all_contacts():
     result = db['contacts'].find({})
     result = list(result)
     result = dumps(result)
+    return result
 
 # Get all contacts from database in vcard format
 def get_all_contacts_vcard():
