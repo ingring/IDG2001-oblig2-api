@@ -239,7 +239,7 @@ def get_all_contacts():
 # Get all contacts from database in vcard format
 def get_all_contacts_vcard():
     # Get all contacts from database
-    result = get_all_contacts
+    result = get_all_contacts()
 
     # Convert the JSON string to a Python dict
     data = json.loads(result)
