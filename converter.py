@@ -233,16 +233,16 @@ def get_all_contacts():
 # Get all contacts from database in vcard format
 def get_all_contacts_vcard():
     # Get all contacts from database
-    result = get_all_contacts()
+    all_contacts = get_all_contacts()
 
-    # Convert the JSON string to a Python dict
-    data = json.loads(result)
+    # # Convert the JSON string to a Python dict
+    # data = json.loads(result)
 
     # Define empty string to store the vcard content
     string = ''
 
     # loops through each contact in the data from the database
-    for contact in data:
+    for contact in all_contacts:
 
         # add BEGIN:VCARD in front of each contact
         string += 'BEGIN:VCARD'
