@@ -252,7 +252,7 @@ def get_all_contacts_vcard():
 
         # formats each contact to a vcard format
         for item in contact_dict.items():
-            newString = vcard_formatter(item)
+            newString = vcard_formatter(contact_dict)
             string += newString
 
         # add END:VCARD at the end of each contact
