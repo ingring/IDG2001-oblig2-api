@@ -226,6 +226,8 @@ def vcard_formatter(data):
 # Get all contacts from database
 def get_all_contacts():
     result = db['contacts'].find({})
+    result = list(result)
+    result = dumps(result)
     return result
 
 # Get all contacts from database in vcard format
@@ -234,7 +236,8 @@ def get_all_contacts_vcard():
     all_contacts = get_all_contacts()
 
     # Convert the JSON string to a Python dict
-    all_contacts = loads(dumps(all_contacts))
+    # all_contacts = loads(dumps(all_contacts))
+    all_contacts = json.loads(all_contacts)
 
     # Define empty string to store the vcard content
     string = ''
