@@ -244,12 +244,14 @@ def get_all_contacts_vcard():
 
     # loops through each contact in the data from the database
     for contact in all_contacts:
+        # Convert tuple to dictionary
+        contact_dict = dict(contact)
 
         # add BEGIN:VCARD in front of each contact
         string += 'BEGIN:VCARD'
 
         # formats each contact to a vcard format
-        for item in contact.items():
+        for item in contact_dict.items():
             newString = vcard_formatter(item)
             string += newString
 
