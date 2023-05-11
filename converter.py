@@ -237,7 +237,7 @@ def get_all_contacts_vcard():
 
     # Convert the JSON string to a Python dict
     # all_contacts = loads(dumps(all_contacts))
-    all_contacts = json.loads(all_contacts)
+    all_contacts = loads(all_contacts)
 
     # Define empty string to store the vcard content
     string = ''
