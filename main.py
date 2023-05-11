@@ -42,6 +42,8 @@ def add_to_db_route():
 @app.route('/contacts', methods=['GET'])
 def get_all_contacts_JSON_route():
     all_contacts = get_all_contacts()
+    all_contacts = list(all_contacts)
+    all_contacts = dumps(all_contacts)
     return json.loads(all_contacts)
 
 
