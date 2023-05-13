@@ -1,6 +1,6 @@
 import pytest
 
-from ..src import converter
+from src import converter
 
 # from converter import process_lines, split_content
 
