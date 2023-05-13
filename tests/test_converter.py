@@ -1,6 +1,8 @@
 import pytest
 
-from converter import process_lines, split_content
+from ..src import converter
+
+# from converter import process_lines, split_content
 
 # # define a test function that checks the behavior of the function
 # def test_process_lines():
