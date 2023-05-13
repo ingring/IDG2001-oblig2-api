@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from dotenv import dotenv_values
 import os
 
-if os.path.exists('.env'):
+if os.path.isfile('.env'):
     # Read from the .env file
     config = dotenv_values('.env')
     MONGO_URI = config['MONGO_URI']
