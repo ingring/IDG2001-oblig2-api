@@ -12,7 +12,7 @@ import uuid
 from idg2001_oblig2_api.database import db
 
 # from functions import *
-import converter
+import idg2001_oblig2_api.converter as converter
 
 # to allow cors, if else the client would get a cors error
 from flask_cors import CORS
@@ -22,7 +22,6 @@ app = Flask(__name__)
 
 # allow cors on all of the routes
 CORS(app, resources={r"/*": {"origins": ["*"]}})
-
 
 
 def id2str(document, unique_id):
