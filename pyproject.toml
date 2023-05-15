@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 
 [tool.pytest.ini_options]
-addopts = "--cov=exercise7 --cov-report html --cov-report term"
+addopts = "--cov=idg2001_oblig2_api --cov-report html --cov-report term"
 testpaths = [
     "tests",
 ]

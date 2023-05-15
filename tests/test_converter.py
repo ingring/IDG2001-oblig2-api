@@ -1,6 +1,6 @@
 import pytest
 
-from src.converter import split_content
+from idg2001_oblig2_api.converter import split_content
 
 # from converter import process_lines, split_content
 
