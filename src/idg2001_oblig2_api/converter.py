@@ -229,8 +229,8 @@ def vcard_formatter(data):
 # Get all contacts from database
 def get_all_contacts():
     result = db["contacts"].find({})
-    result = list(result)
-    result = dumps(result)
+    result = list(result)  # type: ignore
+    result = dumps(result)  # type: ignore
     return result
 
 
