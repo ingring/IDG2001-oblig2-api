@@ -24,6 +24,12 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["*"]}})
 
 
+
+def id2str(document, unique_id):
+    document["uuid"] = str(unique_id)
+    return document
+
+
 # add contact in database
 @app.route("/contacts", methods=["POST"])
 def add_to_db_route():
@@ -32,7 +38,8 @@ def add_to_db_route():
     for document in contact_list:
         if document:
             # uses uuid to set a unique id to prevent duplicate documents in the same post request
-            document["uuid"] = str(uuid.uuid4())
+            unique_id = uuid.uuid4()
+            document = id2str(document, unique_id)
             db["contacts"].update_one(
                 {"uuid": document["uuid"]}, {"$set": document}, upsert=True
             )
