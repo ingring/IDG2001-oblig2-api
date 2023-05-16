@@ -1,8 +1,5 @@
-from flask import Flask, request, jsonify
-import os
-import json
 import re
-from database import db
+from idg2001_oblig2_api.database import db
 
 from bson import ObjectId
 from bson.json_util import dumps, loads
@@ -12,48 +9,52 @@ from bson.json_util import dumps, loads
 # If key is not in this table below, return the key name instead
 # Inspired by lab 3
 def replace_common_keys(key):
-    key_main = key.split(';')[0]
+    key_main = key.split(";")[0]
     return {
-        'VERSION': 'version',
-        'N': 'name',
-        'FN': 'full_name',
-        'ORG': 'organisation',
-        'EMAIL': 'email',
-        'BDAY': 'birthday'
+        "VERSION": "version",
+        "N": "name",
+        "FN": "full_name",
+        "ORG": "organisation",
+        "EMAIL": "email",
+        "BDAY": "birthday",
     }.get(key_main, key)
+
 
 # reverts it back to vcard format
 def revert_common_keys(key):
-    key_main = key.split(';')[0]
+    key_main = key.split(";")[0]
     return {
-        'version': 'VERSION',
-        'name': 'N',
-        'full_name': 'FN',
-        'organisation': 'ORG',
-        'email': 'EMAIL',
-        'birthday': 'BDAY'
+        "version": "VERSION",
+        "name": "N",
+        "full_name": "FN",
+        "organisation": "ORG",
+        "email": "EMAIL",
+        "birthday": "BDAY",
     }.get(key_main.lower(), key)
+
 
 # Splits into lists on 'END:VCARD'
 def split_content(content):
-    return content.split('END:VCARD')
+    return content.split("END:VCARD")
+
 
 # Removes the last line which is END:VCARD
 def remove_last_line(contact_split):
-    contact_split[-1] = contact_split[-1].replace('END:VCARD', '')
+    contact_split[-1] = contact_split[-1].replace("END:VCARD", "")
     return contact_split
+
 
 # processes each line in the list based on whether it matches the pattern or not
 # adds the resulting key-value pairs to a dictionary
 def process_lines(lines, pattern):
     contact = {}
 
-    # loops through each line in contact lines 
+    # loops through each line in contact lines
     for line in lines:
         line = line.strip()
 
         # remove BEGIN:VCARD
-        if line.startswith('BEGIN:'):
+        if line.startswith("BEGIN:"):
             continue
 
         # remove empty lines
@@ -67,18 +68,19 @@ def process_lines(lines, pattern):
 
         # if not, make a key value pair with the more common human language keys
         else:
-            key, *value = line.split(':', 1)
-            value = ':'.join(value)
+            key, *value = line.split(":", 1)
+            value = ":".join(value)
             key = replace_common_keys(key)
             contact[key] = value
     return contact
+
 
 # since the front end do minimal with the file before sending it to the backend,
 # we have to structure the content before we send it to a database
 # Inspired by lab 3
 def structure_input_text(content):
     # Define the regular expression pattern to match
-    pattern = r'^(TEL|ADR).*'
+    pattern = r"^(TEL|ADR).*"
 
     # splits the vcard content into each contacts
     contact_split = split_content(content)
@@ -89,9 +91,9 @@ def structure_input_text(content):
     # empty list that will hold all of the contacts
     contacts = []
 
-    # loops through each contact and makes a contact object 
+    # loops through each contact and makes a contact object
     for each_contact in contact_split:
-        lines = each_contact.split('\r\n')
+        lines = each_contact.split("\r\n")
 
         # processes each line in the list of lines based on matching the pattern or not
         # also returns key value pair
@@ -100,43 +102,46 @@ def structure_input_text(content):
         # appends the contact object to the contacts list
         contacts.append(contact)
     return contacts
-    
+
+
 # replaces the string, if it matches "TEL" or "ADR" with phone or address
 def replace_prefix(str):
     # Define the regular expression pattern to match
-    pattern = r'^(TEL|ADR).*'
-    pattern_phone = r'^TEL.*'
-    pattern_address = r'^ADR.*'
+    # pattern = r"^(TEL|ADR).*"
+    pattern_phone = r"^TEL.*"
+    pattern_address = r"^ADR.*"
 
     # If the str matches, replace "TEL" with "phone"
     if re.match(pattern_phone, str):
-        return str.replace('TEL', 'phone')
+        return str.replace("TEL", "phone")
 
     # If the str matches, replace "ADR" with "address"
     if re.match(pattern_address, str):
-        return str.replace('ADR', 'address')
+        return str.replace("ADR", "address")
 
     return str
+
 
 # replaces semicolons with underscores, if no type is present in the string
 def add_type(str):
     # Use regular expressions to extract the type (if present)
-    match = re.search(r';TYPE=([^,:;]+)', str)
+    match = re.search(r";TYPE=([^,:;]+)", str)
     if match:
         type_str = match.group(1)
 
         # Replace semicolons with percent signs to create a URL-friendly string
-        type_str = type_str.replace(';', '%', 1)
+        type_str = type_str.replace(";", "%", 1)
 
         # Add the type to the output string
-        return str.replace(';TYPE=' + type_str, '_' + type_str + '$')
+        return str.replace(";TYPE=" + type_str, "_" + type_str + "$")
     else:
-        return str.replace(';', '_')
+        return str.replace(";", "_")
 
-# Replaces the prefix, adds the type and formats the string into a dictionary 
+
+# Replaces the prefix, adds the type and formats the string into a dictionary
 def copy_prefix(str):
     # Define the regular expression pattern to match
-    pattern = r'^(TEL|ADR).*'
+    pattern = r"^(TEL|ADR).*"
 
     # Check if the input string matches the regular expression
     if re.match(pattern, str):
@@ -152,22 +157,23 @@ def copy_prefix(str):
     else:
         return str
 
+
 # creates a dictionary from the string, that includes prefix and value
 def create_dictionary(string):
     # if it is a TEL, use these to split the string
-    if string.startswith('phone'):
-        delimiter = ':+'
-        prefix_delimiter = '$'
-        default_prefix = ':+'
+    if string.startswith("phone"):
+        delimiter = ":+"
+        prefix_delimiter = "$"
+        default_prefix = ":+"
 
     # if it is a ADR, use these
-    elif string.startswith('address'):
-        delimiter = ':;;'
-        prefix_delimiter = '$'
-        default_prefix = ':;;'
+    elif string.startswith("address"):
+        delimiter = ":;;"
+        prefix_delimiter = "$"
+        default_prefix = ":;;"
 
     else:
-        raise ValueError('Invalid input string')
+        raise ValueError("Invalid input string")
 
     # split the string
     key_prefix, *value = string.split(delimiter)
@@ -186,25 +192,21 @@ def create_dictionary(string):
         value = value[2:-2]
 
     # creating the structure we use on the db
-    data = {
-        key: [{
-            "prefix": prefix,
-            "value": value
-        }]
-    }
+    data = {key: [{"prefix": prefix, "value": value}]}
 
     return data
 
+
 # format the data from JSON to vCard
 def vcard_formatter(data):
-    pattern = r'^(phone|address).*'
+    pattern = r"^(phone|address).*"
 
-    string = ''
-    string += 'BEGIN:VCARD'
+    string = ""
+    string += "BEGIN:VCARD"
 
     for item in data.items():
         # don't include the mongodb id or uuid created column in the vcf
-        if item[0] in ('_id', 'uuid'):
+        if item[0] in ("_id", "uuid"):
             continue
 
         # if it is a phone or address:
@@ -212,23 +214,25 @@ def vcard_formatter(data):
             # Replace with the function that creates vCard string
             newString = create_vcard_string(item)
             string += newString
-        
+
         else:
             # returns the keys in vcard format
             formatted_key = revert_common_keys(item[0])
 
             # creates the vcard line
-            string += '\n' + formatted_key + ':' + item[1]
+            string += "\n" + formatted_key + ":" + item[1]
 
-    string += '\nEND:VCARD\n'
+    string += "\nEND:VCARD\n"
     return string
+
 
 # Get all contacts from database
 def get_all_contacts():
-    result = db['contacts'].find({})
-    result = list(result)
-    result = dumps(result)
+    result = db["contacts"].find({})
+    result = list(result)  # type: ignore
+    result = dumps(result)  # type: ignore
     return result
+
 
 # Get all contacts from database in vcard format
 def get_all_contacts_vcard():
@@ -240,28 +244,30 @@ def get_all_contacts_vcard():
     all_contacts = loads(all_contacts)
 
     # Define empty string to store the vcard content
-    string = ''
+    string = ""
 
     # loops through each contact in the data from the database
     for contact in all_contacts:
         # Convert tuple to dictionary
         contact_dict = dict(contact)
-        
+
         # add BEGIN:VCARD in front of each contact
-        string += 'BEGIN:VCARD'
+        string += "BEGIN:VCARD"
 
         # formats each contact to a vcard format
         newString = vcard_formatter(contact_dict)
         string += newString
 
         # add END:VCARD at the end of each contact
-        string += '\nEND:VCARD\n'
+        string += "\nEND:VCARD\n"
     return string
+
 
 # get contact by id
 def get_contact(id):
-    result = db['contacts'].find_one({"_id": ObjectId(id)}, {"_id": 0})
-    return result 
+    result = db["contacts"].find_one({"_id": ObjectId(id)}, {"_id": 0})
+    return result
+
 
 # get contact by id in vcard format
 def get_contact_vcard(id):
@@ -274,47 +280,46 @@ def get_contact_vcard(id):
     # Convert the dict to vCard format
     return vcard_formatter(data)
 
+
 def revert_prefix(str):
     # Define the regular expression pattern to match
-    pattern_phone = r'^phone.*'
-    pattern_address = r'^address.*'
+    pattern_phone = r"^phone.*"
+    pattern_address = r"^address.*"
 
     # Check if the input string matches the regular expression
     if re.match(pattern_phone, str):
         # If the str matches, replace "phone" with "TEL"
-        output_str = str.replace('phone', 'TEL')
+        output_str = str.replace("phone", "TEL")
 
         # Use regular expressions to extract the type (if present)
-        match = re.search(r'_([^$,]+)\$', str)
+        match = re.search(r"_([^$,]+)\$", str)
         if match:
             type_str = match.group(1)
 
             # Replace percent signs with semicolons to revert the URL-friendly string
-            type_str = type_str.replace('%', ';', 1)
+            type_str = type_str.replace("%", ";", 1)
 
             # Add the type to the output string
-            output_str = output_str.replace(
-                '_' + type_str + '$', ';TYPE=' + type_str)
+            output_str = output_str.replace("_" + type_str + "$", ";TYPE=" + type_str)
         else:
-            output_str = output_str.replace('_', ';')
+            output_str = output_str.replace("_", ";")
 
     elif re.match(pattern_address, str):
         # If the str matches, replace "address" with "ADR"
-        output_str = str.replace('address', 'ADR')
+        output_str = str.replace("address", "ADR")
 
         # Use regular expressions to extract the type (if present)
-        match = re.search(r'_([^$,]+)\$', str)
+        match = re.search(r"_([^$,]+)\$", str)
         if match:
             type_str = match.group(1)
 
             # Replace percent signs with semicolons to revert the URL-friendly string
-            type_str = type_str.replace('%', ';', 1)
+            type_str = type_str.replace("%", ";", 1)
 
             # Add the type to the output string
-            output_str = output_str.replace(
-                '_' + type_str + '$', ';TYPE=' + type_str)
+            output_str = output_str.replace("_" + type_str + "$", ";TYPE=" + type_str)
         else:
-            output_str = output_str.replace('_', ';')
+            output_str = output_str.replace("_", ";")
 
     else:
         # If the string doesn't match, print an error message
@@ -334,15 +339,15 @@ def create_vcard_string(data):
     # remove unwanted characters
     if value.startswith("['") and value.endswith("']"):
         value = value[2:-2]
-    string = ''
+    string = ""
 
-    if key.startswith('phone_'):
+    if key.startswith("phone_"):
         key = key[6:]
-        string += 'TEL;TYPE='
+        string += "TEL;TYPE="
 
-    elif key.startswith('address_'):
+    elif key.startswith("address_"):
         key = key[8:]
-        string += 'ADR;TYPE='
+        string += "ADR;TYPE="
         # return the item as a string
-        
+
     return f"\n{string}{key}{prefix}{value}"
