@@ -22,10 +22,5 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install tox tox-gh-actions
-    - name: Clear cache
-      run: |
-        echo "::set-env name=CACHE_DIR::/tmp/.pip-cache"
-        pip cache purge
     - name: Test with tox
       run: tox
-      
