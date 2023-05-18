@@ -1,4 +1,11 @@
 from setuptools import setup
 
 if __name__ == '__main__':
-    setup()
+    # setup()
+
+    setup(
+        name='idg2001_oblig2_api',
+        version='1.0.0',
+        description='IDG2001 oblig2 main api',
+        packages=['idg2001_oblig2_api'],
+    )
