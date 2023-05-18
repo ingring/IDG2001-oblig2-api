@@ -8,5 +8,6 @@ if __name__ == '__main__':
         version='1.0.0',
         description='IDG2001 oblig2 main api',
         packages=['idg2001_oblig2_api'],
-        package_dir={'idg2001_oblig2_api': 'src/idg2001_oblig2_api'}
+        package_dir={'idg2001_oblig2_api': 'src/idg2001_oblig2_api'},
+        install_requires=['idg2001_oblig2_api'],
     )
