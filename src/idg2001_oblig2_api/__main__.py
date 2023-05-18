@@ -9,10 +9,10 @@ import json
 import uuid
 
 # import the connection of the database and all of the functions used inside the routes
-from idg2001_oblig2_api.database import db
+from src.idg2001_oblig2_api.database import db
 
 # from functions import *
-import idg2001_oblig2_api.converter as converter
+import src.idg2001_oblig2_api.converter as converter
 
 # to allow cors, if else the client would get a cors error
 from flask_cors import CORS
