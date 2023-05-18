@@ -1,4 +1,4 @@
-idg2001_oblig2_api==1.0.0
+-e ./src/idg2001_oblig2_api
 click==8.1.3
 Flask==2.2.2
 gunicorn==20.1.0
