@@ -9,10 +9,13 @@ import json
 import uuid
 
 # import the connection of the database and all of the functions used inside the routes
-from idg2001_oblig2_api.database import db
+# from idg2001_oblig2_api.database import db
+from .database import db
 
 # from functions import *
-import idg2001_oblig2_api.converter as converter
+# import idg2001_oblig2_api.converter as converter
+
+from . import converter
 
 # try:
 #     from idg2001_oblig2_api.database import db

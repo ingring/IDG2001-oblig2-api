@@ -1,5 +1,7 @@
 import re
-from idg2001_oblig2_api.database import db
+# from idg2001_oblig2_api.database import db
+
+from .database import db
 
 # try:
 #     from idg2001_oblig2_api.database import db
