@@ -1,1 +1,1 @@
-web: gunicorn main:app
+web: gunicorn src.idg2001_oblig2_api.__main__:app
