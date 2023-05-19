@@ -7,6 +7,9 @@ import os
 import json
 import uuid
 
+# to allow cors, if else the client would get a cors error
+from flask_cors import CORS
+
 # import the connection of the database and all of the functions used inside the routes
 # from idg2001_oblig2_api.database import db
 from .database import db
@@ -17,11 +20,9 @@ from .database import db
 # from idg2001_oblig2_api import converter
 from . import converter
 
+# to get information from the environmental variable
 from dotenv import load_dotenv
 load_dotenv()
-
-# to allow cors, if else the client would get a cors error
-from flask_cors import CORS
 
 # Setup the server
 app = Flask(__name__)
@@ -32,7 +33,6 @@ CORS(app, resources={r"/*": {"origins": ["*"]}})
 # set up API Keys from the environmental variable
 API_KEY = os.getenv("API_KEY")
 print(API_KEY)
-    
 
 # Checks if it is the right key    
 def check_api_key():
