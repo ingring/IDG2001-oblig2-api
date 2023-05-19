@@ -34,6 +34,9 @@ def id2str(document, unique_id):
 # add contact in database
 @app.route("/contacts", methods=["POST"])
 def add_to_db_route():
+    print('in post')
+    test = request.get_json()
+    print('this is with get_json: ', test)
     data = request.json["message"]  # type: ignore
     contact_list = converter.structure_input_text(data)
     for document in contact_list:
@@ -45,10 +48,9 @@ def add_to_db_route():
                 {"uuid": document["uuid"]}, {"$set": document}, upsert=True
             )
     contact = json.dumps(contact_list)
-    return Flask.jsonify({"message": contact})  # type: ignore
+    return json.dumps({"message": contact})  # type: ignore
 
 
-# GET all contacts in JSON format
 @app.route("/contacts", methods=["GET"])
 def get_all_contacts_JSON_route():
     all_contacts = converter.get_all_contacts()
