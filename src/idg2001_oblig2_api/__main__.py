@@ -35,7 +35,7 @@ API_KEY = os.getenv("API_KEY")
 print(API_KEY)
 
 
-# Checks if it is the right key    
+# Checks if it is the right key
 def check_api_key():
 
     # Checks if it exists a key variable at all
