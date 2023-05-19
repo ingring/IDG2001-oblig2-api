@@ -49,12 +49,13 @@ def check_api_key():
 
     if key is None:
         print('API key is missing')
-        return {'message': 'API key is missing'}, 401
+        return 'API key is missing'
 
     if key != API_KEY:
         print('Invalid API key')
-        return {'message': 'Invalid API key'}, 401
-
+        return 'Invalid API key'
+    
+    return 
 
 # changes the id to string
 def id2str(document, unique_id):
@@ -98,7 +99,9 @@ def add_to_db_route():
 
 @app.route("/contacts", methods=["GET"])
 def get_all_contacts_JSON_route():
-    check_api_key()
+    error = check_api_key()
+    if error:
+        return jsonify(error)
     all_contacts = converter.get_all_contacts()
     return json.loads(all_contacts)
 
@@ -106,7 +109,9 @@ def get_all_contacts_JSON_route():
 # GET all contacts in vcard format inside a JSON structure
 @app.route("/contacts/vcard", methods=["GET"])
 def get_all_contacts_vcard_route():
-    check_api_key()
+    error = check_api_key()
+    if error:
+        return jsonify(error)
     all_contacts_vcard = converter.get_all_contacts_vcard()
     return {"message": all_contacts_vcard}
 
@@ -114,14 +119,18 @@ def get_all_contacts_vcard_route():
 # GET all contacts in JSON format
 @app.route("/contacts/<id>", methods=["GET"])
 def get_contact_JSON_route(id):
-    check_api_key()
+    error = check_api_key()
+    if error:
+        return jsonify(error)
     return converter.get_contact(id)
 
 
 # GET contact by id and visualize in vcard format inside a JSON structure
 @app.route("/contacts/<id>/vcard", methods=["GET"])
 def get_contact_vcard_route(id):
-    check_api_key()
+    error = check_api_key()
+    if error:
+        return jsonify(error)
     contact_vcard = converter.get_contact_vcard(id)
     return {"message": contact_vcard}
 
