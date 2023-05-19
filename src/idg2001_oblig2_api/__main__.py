@@ -3,6 +3,7 @@
 # os - to get environmental variables
 # json - to work with json format
 from flask import Flask, request
+from flask import jsonify
 import os
 import json
 
@@ -51,18 +52,17 @@ def add_to_db_route():
     vcard_contacts = converter.get_all_contacts_vcard()
 
     # Serialize the dictionaries to JSON strings
-    json_contacts_str = json.dumps(json_contacts)
-    vcard_contacts_str = json.dumps(vcard_contacts)
+    # json_contacts_str = json.dumps(json_contacts)
+    # vcard_contacts_str = json.dumps(vcard_contacts)
 
     # Create a dictionary to hold the JSON responses
     response = {
-        "json": json_contacts_str,
-        "vcard": vcard_contacts_str
+        "json": json_contacts,
+        "vcard": vcard_contacts
     }
 
-    # Serialize the response dictionary to a JSON string
-    response_str = json.dumps(response)
-    return response_str  # type: ignore
+    # Use the jsonify function to automatically serialize the dictionary to JSON
+    return jsonify(response)
 
 
 @app.route("/contacts", methods=["GET"])
