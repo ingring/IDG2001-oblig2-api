@@ -34,18 +34,22 @@ CORS(app, resources={r"/*": {"origins": ["*"]}})
 API_KEY = os.getenv("API_KEY")
 print(API_KEY)
 
+
 # Checks if it is the right key    
 def check_api_key():
+
     # Checks if it exists a key variable at all
     if not API_KEY:
         raise ValueError('API_KEY environment variable not set')
-    
+
     key = request.args.get('key')
     print('dotenv', repr(API_KEY))
     print('key', repr(key))
+
     if key is None:
         print('API key is missing')
         return {'message': 'API key is missing'}, 401
+
     if key != API_KEY:
         print('Invalid API key')
         return {'message': 'Invalid API key'}, 401
