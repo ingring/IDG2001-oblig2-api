@@ -47,8 +47,9 @@ def add_to_db_route():
             db["contacts"].update_one(
                 {"uuid": document["uuid"]}, {"$set": document}, upsert=True
             )
-    contact = json.dumps(contact_list)
-    return json.dumps({"message": contact})  # type: ignore
+    json_contacts = converter.get_all_contacts()
+    vcard_contacts = converter.get_all_contacts_vcard()
+    return json.dumps({"json": json_contacts, "vcard": vcard_contacts})  # type: ignore
 
 
 @app.route("/contacts", methods=["GET"])
