@@ -53,7 +53,7 @@ def add_to_db_route():
 # add contact in database
 @app.route("/test", methods=["POST"])
 def just_a_test():
-    return Flask.jsonify({"message": 'noice'})
+    return 'Test'
 
 # GET all contacts in JSON format
 
