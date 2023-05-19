@@ -3,6 +3,7 @@
 # os - to get environmental variables
 # json - to work with json format
 from flask import Flask, request
+from flask import jsonify
 import os
 import json
 import uuid
@@ -65,6 +66,9 @@ def id2str(document, unique_id):
 @app.route("/contacts", methods=["POST"])
 def add_to_db_route():
     # check_api_key()
+    print('in post')
+    test = request.get_json()
+    print('this is with get_json: ', test)
     data = request.json["message"]  # type: ignore
     contact_list = converter.structure_input_text(data)
     for document in contact_list:
@@ -75,11 +79,23 @@ def add_to_db_route():
             db["contacts"].update_one(
                 {"uuid": document["uuid"]}, {"$set": document}, upsert=True
             )
-    contact = json.dumps(contact_list)
-    return Flask.jsonify({"message": contact})  # type: ignore
+        json_contacts = converter.get_all_contacts()
+    vcard_contacts = converter.get_all_contacts_vcard()
+
+    # Serialize the dictionaries to JSON strings
+    # json_contacts_str = json.dumps(json_contacts)
+    # vcard_contacts_str = json.dumps(vcard_contacts)
+
+    # Create a dictionary to hold the JSON responses
+    response = {
+        "json": json_contacts,
+        "vcard": vcard_contacts
+    }
+
+    # Use the jsonify function to automatically serialize the dictionary to JSON
+    return jsonify(response)
 
 
-# GET all contacts in JSON format
 @app.route("/contacts", methods=["GET"])
 def get_all_contacts_JSON_route():
     check_api_key()
