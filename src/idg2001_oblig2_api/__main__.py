@@ -34,6 +34,7 @@ def id2str(document, unique_id):
 # add contact in database
 @app.route("/contacts", methods=["POST"])
 def add_to_db_route():
+    print(request.json["message"])
     data = request.json["message"]  # type: ignore
     contact_list = converter.structure_input_text(data)
     for document in contact_list:
