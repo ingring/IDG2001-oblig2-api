@@ -47,7 +47,7 @@ def add_to_db_route():
                 {"uuid": document["uuid"]}, {"$set": document}, upsert=True
             )
     contact = json.dumps(contact_list)
-    return Flask.jsonify({"message": contact})  # type: ignore
+    return json.dumps({"message": contact})  # type: ignore
 
 
 # add contact in database
