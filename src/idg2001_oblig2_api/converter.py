@@ -1,12 +1,6 @@
 import re
 # from idg2001_oblig2_api.database import db
-
 from .database import db
-
-# try:
-#     from idg2001_oblig2_api.database import db
-# except ImportError:
-#     from src.idg2001_oblig2_api.database import db
 
 from bson import ObjectId
 from bson.json_util import dumps, loads

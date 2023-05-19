@@ -14,15 +14,7 @@ from .database import db
 
 # from functions import *
 # import idg2001_oblig2_api.converter as converter
-
 from . import converter
-
-# try:
-#     from idg2001_oblig2_api.database import db
-#     import idg2001_oblig2_api.converter as converter
-# except ImportError:
-#     from src.idg2001_oblig2_api.database import db
-#     import src.idg2001_oblig2_api.converter as converter
 
 # to allow cors, if else the client would get a cors error
 from flask_cors import CORS
