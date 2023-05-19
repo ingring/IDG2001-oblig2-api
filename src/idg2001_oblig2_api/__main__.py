@@ -51,14 +51,6 @@ def add_to_db_route():
     return json.dumps({"message": contact})  # type: ignore
 
 
-# add contact in database
-@app.route("/test", methods=["POST"])
-def just_a_test():
-    return 'Test'
-
-# GET all contacts in JSON format
-
-
 @app.route("/contacts", methods=["GET"])
 def get_all_contacts_JSON_route():
     all_contacts = converter.get_all_contacts()
