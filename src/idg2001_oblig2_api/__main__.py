@@ -47,9 +47,22 @@ def add_to_db_route():
             db["contacts"].update_one(
                 {"uuid": document["uuid"]}, {"$set": document}, upsert=True
             )
-    json_contacts = converter.get_all_contacts()
+        json_contacts = converter.get_all_contacts()
     vcard_contacts = converter.get_all_contacts_vcard()
-    return json.dumps({"json": json_contacts, "vcard": vcard_contacts})  # type: ignore
+
+    # Serialize the dictionaries to JSON strings
+    json_contacts_str = json.dumps(json_contacts)
+    vcard_contacts_str = json.dumps(vcard_contacts)
+
+    # Create a dictionary to hold the JSON responses
+    response = {
+        "json": json_contacts_str,
+        "vcard": vcard_contacts_str
+    }
+
+    # Serialize the response dictionary to a JSON string
+    response_str = json.dumps(response)
+    return response_str  # type: ignore
 
 
 @app.route("/contacts", methods=["GET"])
