@@ -23,6 +23,7 @@ from . import converter
 
 # to get information from the environmental variable
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # Setup the server
@@ -38,24 +39,24 @@ print(API_KEY)
 
 # Checks if it is the right key
 def check_api_key():
-
     # Checks if it exists a key variable at all
     if not API_KEY:
-        raise ValueError('API_KEY environment variable not set')
+        raise ValueError("API_KEY environment variable not set")
 
-    key = request.args.get('key')
-    print('dotenv', repr(API_KEY))
-    print('key', repr(key))
+    key = request.args.get("key")
+    print("dotenv", repr(API_KEY))
+    print("key", repr(key))
 
     if key is None:
-        print('API key is missing')
-        return 'API key is missing'
+        print("API key is missing")
+        return "API key is missing"
 
     if key != API_KEY:
-        print('Invalid API key')
-        return 'Invalid API key'
-    
-    return 
+        print("Invalid API key")
+        return "Invalid API key"
+
+    return
+
 
 # changes the id to string
 def id2str(document, unique_id):
@@ -69,9 +70,9 @@ def add_to_db_route():
     error = check_api_key()
     if error:
         return jsonify(error)
-    print('in post')
+    print("in post")
     test = request.get_json()
-    print('this is with get_json: ', test)
+    print("this is with get_json: ", test)
     data = request.json["message"]  # type: ignore
     contact_list = converter.structure_input_text(data)
     for document in contact_list:
@@ -90,10 +91,7 @@ def add_to_db_route():
     # vcard_contacts_str = json.dumps(vcard_contacts)
 
     # Create a dictionary to hold the JSON responses
-    response = {
-        "json": json_contacts,
-        "vcard": vcard_contacts
-    }
+    response = {"json": json_contacts, "vcard": vcard_contacts}
 
     # Use the jsonify function to automatically serialize the dictionary to JSON
     return jsonify(response)
