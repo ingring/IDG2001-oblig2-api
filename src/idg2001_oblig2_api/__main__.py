@@ -55,7 +55,7 @@ def check_api_key():
         print('Invalid API key')
         return 'Invalid API key'
 
-    return 
+    return
 
 
 # changes the id to string
