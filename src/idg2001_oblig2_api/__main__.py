@@ -54,8 +54,9 @@ def check_api_key():
     if key != API_KEY:
         print('Invalid API key')
         return 'Invalid API key'
-    
+
     return 
+
 
 # changes the id to string
 def id2str(document, unique_id):
