@@ -54,9 +54,8 @@ def check_api_key():
     if key != API_KEY:
         print('Invalid API key')
         return 'Invalid API key'
-
-    return
-
+    
+    return 
 
 # changes the id to string
 def id2str(document, unique_id):
@@ -67,7 +66,9 @@ def id2str(document, unique_id):
 # add contact in database
 @app.route("/contacts", methods=["POST"])
 def add_to_db_route():
-    # check_api_key()
+    error = check_api_key()
+    if error:
+        return jsonify(error)
     print('in post')
     test = request.get_json()
     print('this is with get_json: ', test)
